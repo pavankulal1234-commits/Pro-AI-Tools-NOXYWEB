@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro AI Tools | NOXYWEB</title>
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg: #050505;
+            --surface: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #ffffff;
+            --text-dim: #a1a1a1;
+            --accent: #00f2fe;
+            --accent-glow: rgba(0, 242, 254, 0.3);
+            --glass: blur(12px);
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .light-mode {
+            --bg: #f9f9f9;
+            --surface: rgba(0, 0, 0, 0.03);
+            --border: rgba(0, 0, 0, 0.1);
+            --text: #1a1a1a;
+            --text-dim: #666666;
+            --accent: #007aff;
+            --accent-glow: rgba(0, 122, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            transition: background-color 0.5s ease;
+        }
+
+        /* --- LOADING SCREEN --- */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(-45deg, #000000, #0a0a0a, #1a1a1a, #000000);
+            background-size: 400% 400%;
+            animation: gradientShift 4s ease infinite;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .loader-content {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand-logo {
+            font-size: 4rem;
+            font-weight: 900;
+            letter-spacing: -4px;
+            background: linear-gradient(45deg, var(--accent), #4facfe, #00f2fe, #ff6b6b);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: logoMorph 3s ease-in-out infinite, logoGlow 2s ease-in-out infinite alternate;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 30px rgba(0, 242, 254, 0.5);
+        }
+
+        @keyframes logoMorph {
+            0%, 100% { background-position: 0% 50%; transform: scale(1); }
+            25% { background-position: 100% 50%; transform: scale(1.05); }
+            50% { background-position: 50% 100%; transform: scale(1.1); }
+            75% { background-position: 100% 0%; transform: scale(1.05); }
+        }
+
+        @keyframes logoGlow {
+            0% { filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.3)); }
+            100% { filter: drop-shadow(0 0 30px rgba(0, 242, 254, 0.8)); }
+        }
+
+        .brand-subtitle {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 2px;
+            animation: fadeInUp 1s ease-out 0.5s both;
+            margin-bottom: 3rem;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loading-container {
+            position: relative;
+            width: 300px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out 1s both;
+        }
+
+        .loading-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #4facfe);
+            border-radius: 2px;
+            animation: loadingProgress 2.5s ease-in-out infinite;
+            box-shadow: 0 0 20px var(--accent);
+        }
+
+        @keyframes loadingProgress {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: float 6s linear infinite;
+        }
+
+        .particle:nth-child(1) {
+            width: 4px; height: 4px;
+            top: 20%; left: 10%;
+            animation-delay: 0s;
+            animation-duration: 8s;
+        }
+
+        .particle:nth-child(2) {
+            width: 6px; height: 6px;
+            top: 60%; left: 80%;
+            animation-delay: 1s;
+            animation-duration: 10s;
+        }
+
+        .particle:nth-child(3) {
+            width: 3px; height: 3px;
+            top: 40%; left: 60%;
+            animation-delay: 2s;
+            animation-duration: 7s;
+        }
+
+        .particle:nth-child(4) {
+            width: 5px; height: 5px;
+            top: 80%; left: 30%;
+            animation-delay: 3s;
+            animation-duration: 9s;
+        }
+
+        .particle:nth-child(5) {
+            width: 4px; height: 4px;
+            top: 10%; left: 70%;
+            animation-delay: 4s;
+            animation-duration: 11s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .loading-text {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 1px;
+            animation: fadeInUp 1s ease-out 1.5s both;
+            margin-top: 2rem;
+        }
+
+        .loading-dots {
+            display: inline-block;
+        }
+
+        .loading-dots::after {
+            content: '';
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: var(--glass);
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            background: linear-gradient(90deg, var(--accent), #4facfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dim);
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--text);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* --- HERO & SEARCH --- */
+        header {
+            padding: 150px 5% 50px;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            letter-spacing: -3px;
+        }
+
+        .search-container {
+            max-width: 700px;
+            margin: 2rem auto;
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 1.2rem 1.5rem 1.2rem 3.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            font-size: 1.1rem;
+            outline: none;
+            backdrop-filter: var(--glass);
+            transition: var(--transition);
+        }
+
+        .search-bar:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+        }
+
+        /* --- CATEGORIES --- */
+        .categories {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .cat-btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .cat-btn.active, .cat-btn:hover {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        /* --- TOOLS GRID --- */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 0 5% 100px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .tool-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            text-decoration: none;
+            color: inherit;
+            backdrop-filter: var(--glass);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .tool-card i {
+            width: 50px;
+            height: 50px;
+            background: var(--accent-glow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            color: var(--accent);
+        }
+
+        .tool-card h3 { font-size: 1.4rem; font-weight: 700; }
+        .tool-card p { color: var(--text-dim); font-size: 0.9rem; line-height: 1.5; }
+
+        /* --- CONTACT SECTION --- */
+        .contact-section {
+            padding: 100px 5%;
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            margin: 40px auto;
+        }
+
+        .contact-card {
+            background: var(--surface);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .contact-card:hover { border-color: var(--accent); background: rgba(255,255,255,0.08); }
+
+        /* --- FLOATING BUTTON --- */
+        .insta-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            z-index: 2000;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 39, 67, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(220, 39, 67, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 39, 67, 0); }
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            padding: 50px 5%;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            background: var(--surface);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .hidden { display: none; }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero-title { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+        <div class="loader-content">
+            <h1 class="brand-logo">NOXYWEB</h1>
+            <p class="brand-subtitle">PRO AI TOOLS</p>
+            <div class="loading-container">
+                <div class="loading-bar"></div>
+            </div>
+            <p class="loading-text">Loading<span class="loading-dots"></span></p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">NOXYWEB</div>
+        <div class="nav-links">
+            <a onclick="showPage('home')" class="active">Home</a>
+            <a onclick="showPage('ai-tools')">AI Tools</a>
+            <a onclick="showPage('categories')">Categories</a>
+            <a onclick="showPage('contact')">Contact</a>
+        </div>
+        <button class="theme-toggle" id="themeBtn">
+            <i data-lucide="moon"></i>
+        </button>
+    </nav>
+
+    <!-- Main Content Container -->
+    <div id="main-content">
+        
+        <!-- Home / Search / Categories Page (Merged for Live Filter) -->
+        <section id="home-page">
+            <header>
+                <h1 class="hero-title">Next Generation<br>AI <span style="color: var(--accent)">Tools</span></h1>
+                <p style="color: var(--text-dim)">Explore the most powerful AI and Developer tools curated by NOXYWEB.</p>
+                
+                <div class="search-container">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input type="text" class="search-bar" id="toolSearch" placeholder="Search for tools (e.g. Gemini, GitHub, chatGPT,whatsapp)...">
+                </div>
+
+                <div class="categories" id="catFilters">
+                    <button class="cat-btn active" data-cat="all">All Tools</button>
+                    <button class="cat-btn" data-cat="AI Tools">AI Tools</button>
+                    <button class="cat-btn" data-cat="Web Tools">Web Tools</button>
+                    <button class="cat-btn" data-cat="Developer Tools">Developer Tools</button>
+                    <button class="cat-btn" data-cat="Productivity Tools">Productivity</button>
+                </div>
+            </header>
+
+            <div class="tools-grid" id="toolsGrid">
+                <!-- Cards will be injected by JS -->
+            </div>
+        </section>
+
+        <!-- Contact Page -->
+        <section id="contact-page" class="contact-section">
+            <h2 class="hero-title" style="font-size: 3rem;">Get in Touch</h2>
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <i data-lucide="mail"></i>
+                    <h3>Email</h3>
+                    <p>pavankulal2005@gmail.com</p>
+                    <a href="mailto:pavankulal2005@gmail.com" class="cat-btn" style="display:inline-block; margin-top:15px; text-decoration:none;">Send Mail</a>
+                </div>
+                <div class="contact-card">
+                    <i data-lucide="message-circle"></i>
+                    <h3>WhatsApp</h3>
+                    <p>Direct Message</p>
+                    <a href="https://wa.me/917829671246" class="cat-btn" style="display:inline-block; margin-top:15px; text-decoration:none;">Chat Now</a>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Floating Instagram Button -->
+    <a href="https://www.instagram.com/noxyweb5/?hl=en" target="_blank" class="insta-float">
+        <i data-lucide="instagram"></i>
+        Follow NOXYWEB
+    </a>
+
+    <footer>
+        <div>
+            <div class="logo">NOXYWEB</div>
+            <p style="color: var(--text-dim); margin-top: 10px;">&copy; 2026 AI Tools. Built by NOXYWEB.</p>
+        </div>
+        <div class="nav-links" style="display: flex;">
+            <a href="https://github.com"><i data-lucide="github"></i></a>
+            <a href="mailto:pavankulal2005@gmail.com"><i data-lucide="mail"></i></a>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Tool Data
+        const tools = [
+            { name: "ChatGPT", cat: "AI Tools", desc: "Advanced conversational AI by OpenAI.", url: "https://chatgpt.com" },
+            { name: "Gemini", cat: "AI Tools", desc: "Google's most capable AI model.", url: "https://gemini.google.com" },
+            { name: "Perplexity", cat: "AI Tools", desc: "AI-powered search engine.", url: "https://perplexity.ai" },
+            { name: "Claude AI", cat: "AI Tools", desc: "Next-gen AI assistant by Anthropic.", url: "https://claude.ai" },
+            { name: "GitHub Copilot", cat: "Developer Tools", desc: "Your AI pair programmer.", url: "https://github.com/features/copilot" },
+            { name: "Blackbox AI", cat: "Developer Tools", desc: "Fastest AI code generation.", url: "https://www.blackbox.ai" },
+            { name: "Stitch Beta", cat: "Developer Tools", desc: "Modern development workflow.", url: "https://stitch.sh" },
+            { name: "Gamma", cat: "AI Tools", desc: "AI generated presentations & sites.", url: "https://gamma.app" },
+            { name: "WhatsApp Web", cat: "Social Media Tools", desc: "Chat from your browser.", url: "https://web.whatsapp.com" },
+            { name: "Instagram Web", cat: "Social Media Tools", desc: "Socialize on the big screen.", url: "https://instagram.com" },
+            { name: "GitHub", cat: "Developer Tools", desc: "Where the world builds software.", url: "https://github.com" },
+            { name: "Netlify", cat: "Web Tools", desc: "Deploy web projects instantly.", url: "https://netlify.com" },
+            { name: "YouTube", cat: "Social Media Tools", desc: "Video sharing platform.", url: "https://youtube.com" },
+            { name: "Google Drive", cat: "Productivity Tools", desc: "Cloud storage and collaboration.", url: "https://drive.google.com" },
+            { name: "Find Hub", cat: "Web Tools", desc: "Discover tools and resources.", url: "#" },
+            { name: "LinkedIn", cat: "Social Media Tools", desc: "Professional networking.", url: "https://linkedin.com" },
+            { name: "Infosys Springboard", cat: "Productivity Tools", desc: "Learning and development.", url: "https://infyspringboard.onwingspan.com" },
+            { name: "Google Translate", cat: "Web Tools", desc: "Multi-language translation.", url: "https://translate.google.com" },
+            { name: "Canvas", cat: "Web Tools", desc: "LMS for education.", url: "https://canvas.instructure.com" },
+            { name: "Photopea", cat: "Web Tools", desc: "Online photo editor.", url: "https://photopea.com" },
+            { name: "MS Word Web", cat: "Productivity Tools", desc: "Document editing online.", url: "https://office.com" },
+            { name: "Bolt.new", cat: "Developer Tools", desc: "Full-stack AI web dev.", url: "https://bolt.new" },
+            { name: "Gmail", cat: "Productivity Tools", desc: "Secure email service.", url: "https://gmail.com" }
+        ];
+
+        const grid = document.getElementById('toolsGrid');
+        const searchInput = document.getElementById('toolSearch');
+        const catButtons = document.querySelectorAll('.cat-btn');
+
+        // Render Tools
+        function renderTools(filter = 'all', search = '') {
+            grid.innerHTML = '';
+            const filtered = tools.filter(t => {
+                const matchesCat = filter === 'all' || t.cat === filter;
+                const matchesSearch = t.name.toLowerCase().includes(search.toLowerCase());
+                return matchesCat && matchesSearch;
+            });
+
+            filtered.forEach(tool => {
+                const card = document.createElement('a');
+                card.href = tool.url;
+                card.target = "_blank";
+                card.className = 'tool-card';
+                card.innerHTML = `
+                    <i data-lucide="external-link"></i>
+                    <div>
+                        <h3>${tool.name}</h3>
+                        <p style="font-size: 0.7rem; color: var(--accent); margin-bottom: 5px;">${tool.cat}</p>
+                        <p>${tool.desc}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        // Live Search
+        searchInput.addEventListener('input', (e) => {
+            renderTools('all', e.target.value);
+        });
+
+        // Category Filter
+        catButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                catButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderTools(btn.dataset.cat);
+            });
+        });
+
+        // Theme Toggle
+        const themeBtn = document.getElementById('themeBtn');
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            const icon = themeBtn.querySelector('i');
+            if (document.body.classList.contains('light-mode')) {
+                icon.setAttribute('data-lucide', 'sun');
+            } else {
+                icon.setAttribute('data-lucide', 'moon');
+            }
+            lucide.createIcons();
+        });
+
+        // Page Switching Logic
+        function showPage(pageId) {
+            const sections = ['home-page', 'contact-page'];
+            sections.forEach(id => {
+                document.getElementById(id).style.display = 'none';
+            });
+
+            if(pageId === 'home' || pageId === 'ai-tools' || pageId === 'categories' || pageId === 'search') {
+                document.getElementById('home-page').style.display = 'block';
+                if(pageId === 'ai-tools') renderTools('AI Tools');
+                if(pageId === 'categories') window.scrollTo({top: 400, behavior: 'smooth'});
+            } else {
+                document.getElementById(pageId + '-page').style.display = 'block';
+            }
+            
+            // Update active link
+            document.querySelectorAll('.nav-links a').forEach(a => {
+                a.classList.remove('active');
+                if(a.innerText.toLowerCase() === pageId) a.classList.add('active');
+            });
+        }
+
+        // Loader Timeout
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.style.transition = 'opacity 1.2s ease';
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 1200);
+                renderTools();
+            }, 4000);
+        });
+    </script>
+</body>
+</html>
